@@ -50,7 +50,7 @@ class dool_plugin(dool):
 			is_readable = os.access(self.log_file, os.R_OK)
 
 			if (not is_readable):
-				raise(Expection("BEES?"))
+				raise Exception('%s is not readable' % self.log_file)
 		except:
 			# If we end up with nothing in the variable we were unable to be
 			# "smart" and have to error out
