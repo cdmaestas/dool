@@ -37,6 +37,7 @@ import signal
 import subprocess
 import sys
 import sysconfig
+import tempfile
 import time
 
 from collections.abc import Sequence
@@ -1977,24 +1978,6 @@ def matchpipe(fileobj, string, tmout = 0.001):
         raise Exception('Nothing found during matchpipe data collection')
     return None
 
-# Test if a command is capable of being run
-def cmd_test(cmd):
-    p = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-    if p.stderr:
-        raise Exception(p.stderr.strip())
-
-# Read command output line by line
-def cmd_readlines(cmd):
-    p = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-    for line in p.stdout.splitlines(keepends=True):
-       yield line
-
-# Read command output column by column
-def cmd_splitlines(cmd, sep=None):
-    p = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-    for line in p.stdout.splitlines():
-       yield line.split(sep)
-
 def proc_readlines(filename):
     "Return the lines of a file, one by one"
 #    for line in open(filename).readlines():
@@ -2140,7 +2123,9 @@ def devel_log(msg):
 
     # If the filehandle isn't already open, we open it
     if not DEBUG_FH:
-        log_file = "/tmp/dool-devel.log"
+        # Include the UID so this doesn't collide with (or get hijacked
+        # via) another user's devel log on a shared, multi-user system.
+        log_file = os.path.join(tempfile.gettempdir(), "dool-devel-%d.log" % os.getuid())
         print("Writing devel log: '%s'" % log_file)
 
         # Apply the NOFOLLOW flag to prevent us from writing into a symlink
@@ -2149,6 +2134,15 @@ def devel_log(msg):
             flags |= os.O_NOFOLLOW
 
         fd = os.open(log_file, flags, 0o600)
+
+        # Refuse to write into a file we don't own. The UID-scoped name
+        # above should make this impossible outside of a deliberate
+        # attempt to plant the file ahead of us, but check anyway since
+        # we're about to truncate whatever this path pointed to.
+        if os.fstat(fd).st_uid != os.getuid():
+            os.close(fd)
+            raise Exception("Refusing to write devel log: %s is not owned by the current user" % log_file)
+
         DEBUG_FH = os.fdopen(fd, "w", 1)
 
         # Print out the header line for the devel log
@@ -2906,9 +2900,6 @@ def main():
                 print('%sPlugin %s failed to load. (%s)' % (text_color(208, "Warning: "), text_color(15, pluginfile), err_str), file=sys.stderr)
 
             continue
-
-        except:
-            print('Module %s caused unknown exception' % pluginfile, file=sys.stderr)
 
         linewidth = linewidth + plug.statwidth() + 1
         totlist.append(plug)
