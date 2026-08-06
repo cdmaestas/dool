@@ -1078,11 +1078,27 @@ Possible internal stats are
 </p>
 </dd>
 <dt class="hdlist1">
+--defaults
+</dt>
+<dd>
+<p>
+    equals -cdnl (cpu, disk, net, load), the plugins dool uses if none are specified
+</p>
+</dd>
+<dt class="hdlist1">
+--all-plugins
+</dt>
+<dd>
+<p>
+    enable every internal and external plugin dool can find
+</p>
+</dd>
+<dt class="hdlist1">
 -a, --all
 </dt>
 <dd>
 <p>
-    equals -cdngy (default)
+    equals -cdngmypl (cpu, disk, net, page, mem, sys, proc, load)
 </p>
 </dd>
 <dt class="hdlist1">
@@ -1182,7 +1198,7 @@ Possible internal stats are
 </p>
 </dd>
 <dt class="hdlist1">
---output file
+-o, --output file
 </dt>
 <dd>
 <p>
@@ -1212,6 +1228,47 @@ Possible internal stats are
 <dd>
 <p>
     show profiling statistics when exiting dool
+</p>
+</dd>
+<dt class="hdlist1">
+--pidfile file
+</dt>
+<dd>
+<p>
+    write dool&#8217;s PID to file, removed automatically on exit
+</p>
+</dd>
+<dt class="hdlist1">
+--debug
+</dt>
+<dd>
+<p>
+    print extra diagnostic info to stderr; repeat for more detail
+</p>
+</dd>
+<dt class="hdlist1">
+--devel
+</dt>
+<dd>
+<p>
+    write a detailed timing log to a per-user file in the system
+    temp directory, useful when debugging dool itself
+</p>
+</dd>
+<dt class="hdlist1">
+-h, --help
+</dt>
+<dd>
+<p>
+    show usage and a list of options, then exit
+</p>
+</dd>
+<dt class="hdlist1">
+-V, --version
+</dt>
+<dd>
+<p>
+    show the dool version and platform info, then exit
 </p>
 </dd>
 <dt class="hdlist1">
@@ -2129,9 +2186,9 @@ DOOL_SNMPCOMMUNITY</code></pre>
 <div id="footnotes"><hr /></div>
 <div id="footer">
 <div id="footer-text">
-Version 1.3.0<br />
+Version 1.3.9<br />
 Last updated
- 2025-02-06 12:09:38 CET
+ 2026-08-05 20:31:38 MDT
 </div>
 </div>
 </body>
