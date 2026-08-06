@@ -6,7 +6,7 @@ Summary: Pluggable real-time performance monitoring tool
 Name: dool
 Version: replaced_by_build.sh
 Release: 1
-License: GPL
+License: GPLv3+
 Group: System Environment/Base
 URL: https://github.com/scottchiefbaker/dool
 

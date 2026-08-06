@@ -1,0 +1,68 @@
+name: RPM package build
+
+on:
+  push:
+    paths:
+      - 'packaging/rpm/**'
+      - 'Makefile'
+      - 'dool'
+      - 'plugins/**'
+      - 'docs/dool.1'
+      - '.github/workflows/rpm-build.yaml'
+  pull_request:
+    paths:
+      - 'packaging/rpm/**'
+      - 'Makefile'
+      - 'dool'
+      - 'plugins/**'
+      - 'docs/dool.1'
+      - '.github/workflows/rpm-build.yaml'
+  workflow_dispatch:
+
+jobs:
+  build-rpm:
+    name: Build and install .rpm
+    runs-on: ubuntu-latest
+    container: rockylinux:9
+    steps:
+      - name: Install build dependencies
+        run: dnf install -y rpm-build make git perl python3 tar gzip
+
+      - uses: actions/checkout@v4
+
+      - name: Mark workspace as safe for git
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Build package
+        run: make rpm
+
+      - name: Locate built package
+        id: pkg
+        run: |
+          pkg=$(ls /var/tmp/dool-*.noarch.rpm)
+          mv "$pkg" .
+          echo "path=$(basename "$pkg")" >> "$GITHUB_OUTPUT"
+
+      - name: Assert no files land outside expected paths (regression check for #4)
+        run: |
+          bad=$(rpm -qlp "${{ steps.pkg.outputs.path }}" | grep -vE '^/usr/(bin|share)/' || true)
+          if [ -n "$bad" ]; then
+            echo "Package installs files outside of /usr/bin and /usr/share:"
+            echo "$bad"
+            exit 1
+          fi
+
+      - name: Install package
+        run: rpm -ivh "${{ steps.pkg.outputs.path }}"
+
+      - name: Smoke test installed binary
+        run: |
+          which dool
+          dool --version
+          dool -taf 1 3
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dool-rpm
+          path: ${{ steps.pkg.outputs.path }}
