@@ -29,9 +29,7 @@ apps:
 parts:
   dool:
     plugin: dump
-    # snapcraft runs from packaging/snap/ (where this file lives), so
-    # walk back up to the actual repo root to pick up dool/plugins/.
-    source: ../..
+    source: .
     # Derive the snap version from the same __version__ string the
     # Debian/RPM packaging scripts already read, so it can't drift.
     override-pull: |

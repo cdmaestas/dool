@@ -58,7 +58,7 @@ release: dist deb rpm
 	@ls --color --human -l $(tmpdir)/dool-$(version)*.*
 
 snap:
-	cd packaging/snap/; snapcraft
+	snapcraft
 
 deb:
 	dpkg-buildpackage -us -uc -b

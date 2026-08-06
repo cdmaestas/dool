@@ -36,3 +36,6 @@ out each platform with an associated build script.
   source tree, and drops the resulting `.deb` in the parent directory).
   Bump the version at the top of `debian/changelog` before cutting a
   release.
+* Build a Snap package: `make snap` (requires `snapcraft`; uses
+  `snap/snapcraft.yaml` at the top of the source tree). The snap
+  version is derived automatically from `dool`'s `__version__`.

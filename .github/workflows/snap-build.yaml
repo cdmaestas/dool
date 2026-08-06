@@ -3,13 +3,13 @@ name: Snap package build
 on:
   push:
     paths:
-      - 'packaging/snap/**'
+      - 'snap/**'
       - 'dool'
       - 'plugins/**'
       - '.github/workflows/snap-build.yaml'
   pull_request:
     paths:
-      - 'packaging/snap/**'
+      - 'snap/**'
       - 'dool'
       - 'plugins/**'
       - '.github/workflows/snap-build.yaml'
@@ -25,8 +25,6 @@ jobs:
       - name: Build snap
         uses: snapcore/action-build@v1
         id: build
-        with:
-          path: packaging/snap
 
       - name: Install snap
         run: sudo snap install --dangerous "${{ steps.build.outputs.snap }}"
