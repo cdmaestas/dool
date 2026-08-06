@@ -1,3 +1,2 @@
 dool usr/bin
 plugins/* usr/share/dool/
-docs/dool.1 usr/share/man/man1/

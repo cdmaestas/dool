@@ -31,4 +31,8 @@ out each platform with an associated build script.
 
 * Build a `.tar.gz` file: `make dist`
 * Build an RPM for RedHat platforms: `make rpm`
-* Build a Debian package: `make deb`
+* Build a Debian package: `make deb` (requires `debhelper`; runs
+  `dpkg-buildpackage` using the `debian/` directory at the top of the
+  source tree, and drops the resulting `.deb` in the parent directory).
+  Bump the version at the top of `debian/changelog` before cutting a
+  release.
