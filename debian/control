@@ -3,12 +3,14 @@ Section: utils
 Priority: optional
 Maintainer: Uroš Knupleš <uros@knuples.net>
 Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Rules-Requires-Root: no
 Homepage: https://github.com/scottchiefbaker/dool
+
 Package: dool
 Architecture: all
-Depends: python3
+Depends: python3, ${misc:Depends}
 Suggests: python3-mysqldb
-Version: <version>
 Description: Python3 compatible fork of dstat.
  Dool is a versatile replacement for vmstat, iostat, netstat and ifstat.
  Dool overcomes some of their limitations and adds some extra features,

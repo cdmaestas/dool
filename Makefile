@@ -61,8 +61,10 @@ snap:
 	cd packaging/snap/; snapcraft
 
 deb:
-	$(MAKE) install DESTDIR=packaging/debian/build
-	cd packaging/debian/; ./build.sh ; cd - > /dev/null
+	dpkg-buildpackage -us -uc -b
+	@echo
+	@echo -e "\033[1;38;5;15mBuilt package(s) are in the parent directory:\033[0m"
+	@ls --color --human -l ../dool_*.deb
 
 display_config:
 	@echo Displaying config
