@@ -2,12 +2,12 @@
 .\"     Title: dool
 .\"    Author: Scott Baker <scott@perturb.org>
 .\" Generator: DocBook XSL Stylesheets vsnapshot <http://docbook.sf.net/>
-.\"      Date: October 2024
+.\"      Date: August 2026
 .\"    Manual: \ \&
-.\"    Source: \ \& 1.3.0
+.\"    Source: \ \& 1.3.9
 .\"  Language: English
 .\"
-.TH "DOOL" "1" "October 2024" "\ \& 1\&.3\&.0" "\ \&"
+.TH "DOOL" "1" "August 2026" "\ \& 1\&.3\&.9" "\ \&"
 .\" -----------------------------------------------------------------
 .\" * Define some portability stuff
 .\" -----------------------------------------------------------------
@@ -242,9 +242,19 @@ aio, cpu, cpu24, cpu\-adv, cpu\-use, disk, disk24, disk24\-old, epoch, fs, int, 
 list the internal and external plugin names
 .RE
 .PP
+\-\-defaults
+.RS 4
+equals \-cdnl (cpu, disk, net, load), the plugins dool uses if none are specified
+.RE
+.PP
+\-\-all\-plugins
+.RS 4
+enable every internal and external plugin dool can find
+.RE
+.PP
 \-a, \-\-all
 .RS 4
-equals \-cdngy (default)
+equals \-cdngmypl (cpu, disk, net, page, mem, sys, proc, load)
 .RE
 .PP
 \-f, \-\-full
@@ -309,7 +319,7 @@ disable repetitive headers
 disable intermediate updates when delay > 1
 .RE
 .PP
-\-\-output file
+\-o, \-\-output file
 .RS 4
 write CSV output to file
 .RE
@@ -329,6 +339,31 @@ enable legacy Dstat output mode
 \-\-profile
 .RS 4
 show profiling statistics when exiting dool
+.RE
+.PP
+\-\-pidfile file
+.RS 4
+write dool\(cqs PID to file, removed automatically on exit
+.RE
+.PP
+\-\-debug
+.RS 4
+print extra diagnostic info to stderr; repeat for more detail
+.RE
+.PP
+\-\-devel
+.RS 4
+write a detailed timing log to a per\-user file in the system temp directory, useful when debugging dool itself
+.RE
+.PP
+\-h, \-\-help
+.RS 4
+show usage and a list of options, then exit
+.RE
+.PP
+\-V, \-\-version
+.RS 4
+show the dool version and platform info, then exit
 .RE
 .PP
 \-\-ascii

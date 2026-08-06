@@ -1,6 +1,6 @@
 = dool(1)
 Scott Baker <scott@perturb.org>
-v1.3.0, October 2024
+v1.3.9, August 2026
 
 == NAME
 dool - versatile tool for generating system resource statistics
@@ -149,8 +149,14 @@ Possible internal stats are::
 --list::
     list the internal and external plugin names
 
+--defaults::
+    equals -cdnl (cpu, disk, net, load), the plugins dool uses if none are specified
+
+--all-plugins::
+    enable every internal and external plugin dool can find
+
 -a, --all::
-    equals -cdngy (default)
+    equals -cdngmypl (cpu, disk, net, page, mem, sys, proc, load)
 
 -f, --full::
     expand -C, -D, -I, -N and -S discovery lists
@@ -188,7 +194,7 @@ Possible internal stats are::
 --noupdate::
     disable intermediate updates when delay > 1
 
---output file::
+-o, --output file::
     write CSV output to file
 
 --display::
@@ -200,6 +206,22 @@ Possible internal stats are::
 
 --profile::
     show profiling statistics when exiting dool
+
+--pidfile file::
+    write dool's PID to file, removed automatically on exit
+
+--debug::
+    print extra diagnostic info to stderr; repeat for more detail
+
+--devel::
+    write a detailed timing log to a per-user file in the system
+    temp directory, useful when debugging dool itself
+
+-h, --help::
+    show usage and a list of options, then exit
+
+-V, --version::
+    show the dool version and platform info, then exit
 
 --ascii::
 	output table data in ascii instead of ANSI
