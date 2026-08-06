@@ -1,5 +1,9 @@
 ### Author: Dag Wieers <dag@wieers.com>
 
+# Syntax:
+#    show only specific thermal zones (by the nick shown in the header):
+#       DOOL_THERMAL_ZONES=tz0,tz2 dool --thermal
+
 class dool_plugin(dool):
     def __init__(self):
         self.name = 'thermal'
@@ -8,17 +12,25 @@ class dool_plugin(dool):
         self.scale = 20
 
         if os.path.exists('/sys/devices/virtual/thermal/'):
-            self.nick = []
-            self.vars = []
+            zones = []
             for zone in os.listdir('/sys/devices/virtual/thermal/'):
-                zone_split=zone.split("thermal_zone")
+                zone_split = zone.split("thermal_zone")
                 if len(zone_split) == 2:
-                    self.vars.append(zone)
-                    name="".join(["tz",zone_split[1]])
-                    self.nick.append(name)
+                    zones.append(zone)
+
+            # Sort numerically (thermal_zone0, thermal_zone1, ..., thermal_zone10)
+            # rather than the arbitrary order os.listdir() returns.
+            zones.sort(key=lambda z: int(z.split("thermal_zone")[1]))
+
+            self.vars = []
+            self.nick = []
+            for zone in zones:
+                name = "".join(["tz", zone.split("thermal_zone")[1]])
+                self.vars.append(zone)
+                self.nick.append(name)
 
         elif os.path.exists('/sys/bus/acpi/devices/LNXTHERM:01/thermal_zone/'):
-            self.vars = os.listdir('/sys/bus/acpi/devices/LNXTHERM:01/thermal_zone/')
+            self.vars = sorted(os.listdir('/sys/bus/acpi/devices/LNXTHERM:01/thermal_zone/'))
             self.nick = []
             for name in self.vars:
                 self.nick.append(name.lower())
@@ -34,8 +46,7 @@ class dool_plugin(dool):
             self.vars = self.nick
 
         elif os.path.exists('/proc/acpi/thermal_zone/'):
-            self.vars = os.listdir('/proc/acpi/thermal_zone/')
-#           self.nick = [name.lower() for name in self.vars]
+            self.vars = sorted(os.listdir('/proc/acpi/thermal_zone/'))
             self.nick = []
             for name in self.vars:
                 self.nick.append(name.lower())
@@ -43,12 +54,42 @@ class dool_plugin(dool):
         else:
             raise Exception('Needs kernel thermal, ACPI or IBM-ACPI support')
 
+        self.filter_zones()
+
     def check(self):
         if not os.path.exists('/proc/acpi/ibm/thermal') and \
            not os.path.exists('/proc/acpi/thermal_zone/') and \
            not os.path.exists('/sys/devices/virtual/thermal/') and \
            not os.path.exists('/sys/bus/acpi/devices/LNXTHERM:00/thermal_zone/'):
             raise Exception('Needs kernel thermal, ACPI or IBM-ACPI support')
+
+    # Optionally restrict which zones are displayed via the
+    # DOOL_THERMAL_ZONES env var, a comma separated list of nicks as
+    # shown in the header (e.g. "tz0,tz2"). Unset/empty means show all.
+    def filter_zones(self):
+        filter_str = os.getenv('DOOL_THERMAL_ZONES', '').strip()
+        if not filter_str:
+            return
+
+        wanted = [z.strip() for z in filter_str.split(',') if z.strip()]
+        if not wanted:
+            return
+
+        filtered_vars = []
+        filtered_nick = []
+        for var, nick in zip(self.vars, self.nick):
+            if nick in wanted or var in wanted:
+                filtered_vars.append(var)
+                filtered_nick.append(nick)
+
+        missing = array_diff(wanted, self.nick + self.vars)
+        for item in missing:
+            msg = text_color(214, "Warning: unable to find thermal zone %s" % item)
+            print(msg)
+
+        if filtered_vars:
+            self.vars = filtered_vars
+            self.nick = filtered_nick
 
     def extract(self):
         if os.path.exists('/sys/devices/virtual/thermal/'):
