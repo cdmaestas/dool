@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# Reject a commit if any staged Python file (dool itself or a plugin)
+# doesn't even parse. Enable with:
+#   git config core.hooksPath .githooks
+
+set -e
+
+files=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^(dool|plugins/.*\.py)$' || true)
+
+if [ -z "$files" ]; then
+    exit 0
+fi
+
+status=0
+for f in $files; do
+    err=$(python3 -m py_compile "$f" 2>&1) || {
+        echo "error: $f failed to compile:"
+        echo "$err" | sed 's/^/  /'
+        status=1
+    }
+done
+
+exit $status
