@@ -36,7 +36,8 @@ jobs:
         id: pkg
         run: |
           pkg=$(ls ../dool_*.deb)
-          echo "path=$pkg" >> "$GITHUB_OUTPUT"
+          mv "$pkg" .
+          echo "path=$(basename "$pkg")" >> "$GITHUB_OUTPUT"
 
       - name: Assert no files land outside usr/ (regression check for #4)
         run: |
