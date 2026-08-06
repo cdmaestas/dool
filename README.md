@@ -81,6 +81,10 @@ Do you want to write your own plugin? Check out the
 [skel plugin](plugins/dool_skel.py) which should be well documented and
 serve as a good starting point.
 
+Every push and PR is checked by CI (syntax + smoke test). You can catch the
+same syntax errors locally before committing by enabling the repo's
+pre-commit hook: `git config core.hooksPath .githooks`.
+
 ### 👨 Team
 
 | Username         | Role                    |
