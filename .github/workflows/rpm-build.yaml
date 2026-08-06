@@ -57,7 +57,7 @@ jobs:
 
       - name: Smoke test installed binary
         run: |
-          which dool
+          command -v dool
           dool --version
           dool -taf 1 3
 
